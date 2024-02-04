@@ -1,0 +1,23 @@
+FROM ubuntu:trusty
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && \
+  apt-get -yq install mysql-server && \
+  rm -rf /var/lib/apt/lists/*
+
+# Change mysql to listen on 0.0.0.0
+ADD bind_0.cnf /etc/mysql/conf.d/bind_0.cnf
+
+ENV    MYSQL_ROOT_PASSWORD=mysql_root_password
+ENV    MYSQL_DATABASE=wordpress
+ENV    MYSQL_USER=wordpress
+ENV    MYSQL_PASSWORD=mysql_password
+
+
+ADD entrypoint-db.sh /entrypoint-db.sh
+RUN chmod 755 /*.sh
+ENTRYPOINT ["/entrypoint-db.sh"]
+
+EXPOSE 3306
+CMD ["mysqld_safe"]
+

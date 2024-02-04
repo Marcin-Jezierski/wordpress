@@ -1,0 +1,42 @@
+# Dockerfile.apache
+FROM ubuntu:latest
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    ghostscript \
+    libapache2-mod-php \
+    ssl-cert \
+    php \
+    php-bcmath \
+    php-imagick \
+    php-intl \
+    php-json \
+    php-mbstring \
+    php-xml \
+    php-mysql \
+    vim \
+    wget \
+    libnss3-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY wordpress.conf /etc/apache2/sites-available/wordpress.conf
+
+RUN a2ensite wordpress
+RUN a2enmod rewrite
+RUN a2enmod ssl
+RUN a2dissite 000-default
+
+EXPOSE 80
+EXPOSE 443
+
+ADD entrypoint-apache.sh ./entrypoint-apache.sh
+
+RUN chmod +x ./entrypoint-apache.sh
+
+ENTRYPOINT ["./entrypoint-apache.sh"]
+
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+
