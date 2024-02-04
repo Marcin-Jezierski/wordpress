@@ -1,0 +1,16 @@
+# Dockerfile.db
+FROM ubuntu:trusty
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && \
+  apt-get -yq install mysql-server && \
+  rm -rf /var/lib/apt/lists/*
+
+COPY bind_0.cnf /etc/mysql/conf.d/bind_0.cnf
+
+COPY entrypoint-db.sh /entrypoint-db.sh
+RUN chmod 755 /*.sh
+ENTRYPOINT ["/entrypoint-db.sh"]
+
+EXPOSE 3306
+CMD ["mysqld_safe"]

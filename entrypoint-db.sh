@@ -14,9 +14,7 @@ if [ -n "$MYSQL_ROOT_PASSWORD" ] ; then
 		FLUSH PRIVILEGES ;
 	EOSQL
 
-	# set this as an init-file to execute on startup
 	set -- "$@" --init-file="$TEMP_FILE"
 fi
 
-# execute the command supplied
 exec "$@"
